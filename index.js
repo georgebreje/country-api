@@ -13,10 +13,16 @@ const app = express();
 app.use(cors());
 
 app.use((req, res, next) => {
-  const clientKey = req.header('x-api-key');
+  const clientKey = req.headers['x-api-key'];
+
+  if (!clientKey) {
+    return res.status(401).json({ error: 'Unauthorized: API key missing' });
+  }
+
   if (clientKey !== API_KEY) {
     return res.status(401).json({ error: 'Unauthorized: Invalid API key' });
   }
+
   next();
 });
 
